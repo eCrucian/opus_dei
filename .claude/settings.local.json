@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -m pytest --cov=app --cov-report=term-missing --cov-fail-under=95 -v)"
+    ]
+  }
+}
