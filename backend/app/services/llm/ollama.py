@@ -21,7 +21,7 @@ class OllamaClient(BaseLLMClient):
             messages.append({"role": "system", "content": system})
         messages.append({"role": "user", "content": prompt})
 
-        async with httpx.AsyncClient(timeout=600.0) as client:
+        async with httpx.AsyncClient(timeout=1800.0) as client:
             resp = await client.post(
                 f"{self.base_url}/api/chat",
                 json={
@@ -63,7 +63,7 @@ class OllamaClient(BaseLLMClient):
             messages.append({"role": "system", "content": system})
         messages.append({"role": "user", "content": prompt})
 
-        async with httpx.AsyncClient(timeout=600.0) as client:
+        async with httpx.AsyncClient(timeout=1800.0) as client:
             async with client.stream(
                 "POST",
                 f"{self.base_url}/api/chat",

@@ -16,7 +16,7 @@ from app.utils.code_executor import safe_exec
 class TestStorage:
     def _patch_sessions(self, monkeypatch, sessions_dir: Path):
         import app.utils.storage as stor
-        monkeypatch.setattr(stor.settings, "sessions_dir", sessions_dir)
+        monkeypatch.setattr(type(stor.settings), "sessions_dir", property(lambda s: sessions_dir))
 
     def test_job_path_returns_json_file(self, tmp_path, monkeypatch):
         self._patch_sessions(monkeypatch, tmp_path)
@@ -176,3 +176,8 @@ class TestSafeExec:
         code = "_result = {'a': {'b': [1, 2]}}"
         result = safe_exec(code, "_result")
         assert result == {"a": {"b": [1, 2]}}
+
+    def test_cleanup_handles_oserror(self):
+        with patch("os.unlink", side_effect=OSError("permission denied")):
+            result = safe_exec("_result = 42", "_result")
+        assert result == 42

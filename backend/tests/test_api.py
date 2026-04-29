@@ -42,10 +42,10 @@ class TestUploadRoutes:
 
     def test_start_with_document_only(self, tmp_path, monkeypatch):
         import app.api.routes.upload as upload_mod
-        monkeypatch.setattr(upload_mod.settings, "uploads_dir", tmp_path / "uploads")
-        (tmp_path / "uploads").mkdir()
-        monkeypatch.setattr(upload_mod.settings, "sessions_dir", tmp_path / "sessions")
-        (tmp_path / "sessions").mkdir()
+        up, sess = tmp_path / "uploads", tmp_path / "sessions"
+        monkeypatch.setattr(type(upload_mod.settings), "uploads_dir", property(lambda s: up))
+        monkeypatch.setattr(type(upload_mod.settings), "sessions_dir", property(lambda s: sess))
+        up.mkdir(); sess.mkdir()
 
         with patch("app.api.routes.upload.run_validation", new=AsyncMock()):
             with patch("app.api.routes.upload.save_job"):
@@ -60,10 +60,10 @@ class TestUploadRoutes:
 
     def test_start_with_document_and_code(self, tmp_path, monkeypatch):
         import app.api.routes.upload as upload_mod
-        monkeypatch.setattr(upload_mod.settings, "uploads_dir", tmp_path / "uploads")
-        (tmp_path / "uploads").mkdir()
-        monkeypatch.setattr(upload_mod.settings, "sessions_dir", tmp_path / "sessions")
-        (tmp_path / "sessions").mkdir()
+        up, sess = tmp_path / "uploads", tmp_path / "sessions"
+        monkeypatch.setattr(type(upload_mod.settings), "uploads_dir", property(lambda s: up))
+        monkeypatch.setattr(type(upload_mod.settings), "sessions_dir", property(lambda s: sess))
+        up.mkdir(); sess.mkdir()
 
         with patch("app.api.routes.upload.run_validation", new=AsyncMock()):
             with patch("app.api.routes.upload.save_job"):
@@ -75,8 +75,9 @@ class TestUploadRoutes:
 
     def test_invalid_document_format_returns_400(self, tmp_path, monkeypatch):
         import app.api.routes.upload as upload_mod
-        monkeypatch.setattr(upload_mod.settings, "uploads_dir", tmp_path / "uploads")
-        (tmp_path / "uploads").mkdir()
+        up = tmp_path / "uploads"
+        monkeypatch.setattr(type(upload_mod.settings), "uploads_dir", property(lambda s: up))
+        up.mkdir()
 
         resp = client.post(
             "/api/upload/start",
@@ -87,10 +88,10 @@ class TestUploadRoutes:
 
     def test_invalid_code_format_skipped_silently(self, tmp_path, monkeypatch):
         import app.api.routes.upload as upload_mod
-        monkeypatch.setattr(upload_mod.settings, "uploads_dir", tmp_path / "uploads")
-        (tmp_path / "uploads").mkdir()
-        monkeypatch.setattr(upload_mod.settings, "sessions_dir", tmp_path / "sessions")
-        (tmp_path / "sessions").mkdir()
+        up, sess = tmp_path / "uploads", tmp_path / "sessions"
+        monkeypatch.setattr(type(upload_mod.settings), "uploads_dir", property(lambda s: up))
+        monkeypatch.setattr(type(upload_mod.settings), "sessions_dir", property(lambda s: sess))
+        up.mkdir(); sess.mkdir()
 
         with patch("app.api.routes.upload.run_validation", new=AsyncMock()):
             with patch("app.api.routes.upload.save_job"):
@@ -114,10 +115,10 @@ class TestUploadRoutes:
 
     def test_pdf_document_accepted(self, tmp_path, monkeypatch):
         import app.api.routes.upload as upload_mod
-        monkeypatch.setattr(upload_mod.settings, "uploads_dir", tmp_path / "uploads")
-        (tmp_path / "uploads").mkdir()
-        monkeypatch.setattr(upload_mod.settings, "sessions_dir", tmp_path / "sessions")
-        (tmp_path / "sessions").mkdir()
+        up, sess = tmp_path / "uploads", tmp_path / "sessions"
+        monkeypatch.setattr(type(upload_mod.settings), "uploads_dir", property(lambda s: up))
+        monkeypatch.setattr(type(upload_mod.settings), "sessions_dir", property(lambda s: sess))
+        up.mkdir(); sess.mkdir()
 
         with patch("app.api.routes.upload.run_validation", new=AsyncMock()):
             with patch("app.api.routes.upload.save_job"):
@@ -129,10 +130,10 @@ class TestUploadRoutes:
 
     def test_docx_document_accepted(self, tmp_path, monkeypatch):
         import app.api.routes.upload as upload_mod
-        monkeypatch.setattr(upload_mod.settings, "uploads_dir", tmp_path / "uploads")
-        (tmp_path / "uploads").mkdir()
-        monkeypatch.setattr(upload_mod.settings, "sessions_dir", tmp_path / "sessions")
-        (tmp_path / "sessions").mkdir()
+        up, sess = tmp_path / "uploads", tmp_path / "sessions"
+        monkeypatch.setattr(type(upload_mod.settings), "uploads_dir", property(lambda s: up))
+        monkeypatch.setattr(type(upload_mod.settings), "sessions_dir", property(lambda s: sess))
+        up.mkdir(); sess.mkdir()
 
         with patch("app.api.routes.upload.run_validation", new=AsyncMock()):
             with patch("app.api.routes.upload.save_job"):

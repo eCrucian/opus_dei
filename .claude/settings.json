@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -m pytest --tb=short -q)",
+      "Bash(python -m uvicorn app.main:app --port 8000 --log-level warning)",
+      "Bash(curl -s http://localhost:8000/docs)",
+      "Bash(curl -s -X POST http://localhost:8000/upload/start -F 'document=@c:/Users/eduar/Downloads/opus_dei/backend/storage/uploads/nt_bond_callable_perpetuo.md;type=text/markdown')",
+      "Bash(curl -s -X POST http://localhost:8000/api/upload/start -F 'document=@c:/Users/eduar/Downloads/opus_dei/backend/storage/uploads/nt_bond_callable_perpetuo.md;type=text/plain')",
+      "Bash(curl -s \"http://localhost:8000/api/validation/32e30f21-3d37-4550-89fb-2d2dd6821a7f/status\")",
+      "Bash(python -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(json.dumps\\(d, indent=2, ensure_ascii=False\\)\\)\")",
+      "Bash(python -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(d['message']['content']\\)\")",
+      "Bash(pkill -f \"uvicorn app.main:app\")",
+      "Bash(curl -s http://localhost:8000/api/health)",
+      "Bash(netstat -ano)",
+      "Bash(taskkill /F /PID 5756)",
+      "PowerShell(Stop-Process -Id 5756 -Force)"
+    ]
+  }
+}

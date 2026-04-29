@@ -1,0 +1,17 @@
+{
+  "job_id": "32e30f21-3d37-4550-89fb-2d2dd6821a7f",
+  "status": "error",
+  "created_at": "2026-04-29T01:34:33.684969",
+  "updated_at": "2026-04-29T01:44:34.674316",
+  "doc_filename": "nt_bond_callable_perpetuo.md",
+  "code_filenames": [],
+  "model_understanding": null,
+  "test_results": [],
+  "report_path": null,
+  "error": "",
+  "progress_log": [
+    "[2026-04-29T01:34:33.825120] Lendo e parseando documento...",
+    "[2026-04-29T01:34:33.826771] Analisando documento com IA — extraindo modelo, equações, fatores de risco...",
+    "[2026-04-29T01:44:34.674316] ERRO: "
+  ]
+}

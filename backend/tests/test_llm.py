@@ -159,6 +159,32 @@ class TestOllamaClient:
 
         assert chunks == ["hello", " world"]
 
+    async def test_stream_with_system(self):
+        lines = ['{"message": {"content": "hi"}, "done": false}']
+
+        async def mock_aiter_lines():
+            for line in lines:
+                yield line
+
+        mock_resp = MagicMock()
+        mock_resp.aiter_lines = mock_aiter_lines
+        mock_stream_ctx = MagicMock()
+        mock_stream_ctx.__aenter__ = AsyncMock(return_value=mock_resp)
+        mock_stream_ctx.__aexit__ = AsyncMock(return_value=None)
+        mock_http = MagicMock()
+        mock_http.stream = MagicMock(return_value=mock_stream_ctx)
+        mock_client_ctx = MagicMock()
+        mock_client_ctx.__aenter__ = AsyncMock(return_value=mock_http)
+        mock_client_ctx.__aexit__ = AsyncMock(return_value=None)
+
+        with patch("httpx.AsyncClient", return_value=mock_client_ctx) as MockClient:
+            client = OllamaClient("http://localhost:11434", "model")
+            chunks = [c async for c in client.stream("prompt", system="be expert")]
+
+        assert chunks == ["hi"]
+        call_json = mock_http.stream.call_args[1]["json"]
+        assert any(m["role"] == "system" for m in call_json["messages"])
+
     async def test_stream_skips_empty_lines(self):
         lines = ["", '{"message": {"content": "data"}, "done": false}']
 
@@ -267,13 +293,34 @@ class TestOpenAIClient:
         mock_stream_ctx.__aexit__ = AsyncMock(return_value=None)
 
         mock_openai = MagicMock()
-        mock_openai.chat.completions.create = MagicMock(return_value=mock_stream_ctx)
+        mock_openai.chat.completions.create = AsyncMock(return_value=mock_stream_ctx)
 
         with patch("openai.AsyncOpenAI", return_value=mock_openai):
             client = OpenAIClient("sk-test", "gpt-4o")
             chunks = [c async for c in client.stream("prompt")]
 
         assert chunks == ["tok1", "tok2"]
+
+    async def test_stream_with_system(self):
+        async def mock_chunk_iter():
+            chunk = MagicMock()
+            chunk.choices[0].delta.content = "reply"
+            yield chunk
+
+        mock_stream_ctx = MagicMock()
+        mock_stream_ctx.__aenter__ = AsyncMock(return_value=mock_chunk_iter())
+        mock_stream_ctx.__aexit__ = AsyncMock(return_value=None)
+
+        mock_openai = MagicMock()
+        mock_openai.chat.completions.create = AsyncMock(return_value=mock_stream_ctx)
+
+        with patch("openai.AsyncOpenAI", return_value=mock_openai):
+            client = OpenAIClient("sk-test", "gpt-4o")
+            chunks = [c async for c in client.stream("prompt", system="be expert")]
+
+        assert chunks == ["reply"]
+        messages = mock_openai.chat.completions.create.call_args[1]["messages"]
+        assert any(m["role"] == "system" for m in messages)
 
 
 # ── AnthropicClient ───────────────────────────────────────────────────────────
@@ -356,6 +403,27 @@ class TestAnthropicClient:
             chunks = [c async for c in client.stream("prompt")]
 
         assert chunks == ["chunk1", "chunk2"]
+
+    async def test_stream_with_system(self):
+        async def mock_text_stream():
+            yield "hi"
+
+        mock_stream = MagicMock()
+        mock_stream.text_stream = mock_text_stream()
+        mock_stream_ctx = MagicMock()
+        mock_stream_ctx.__aenter__ = AsyncMock(return_value=mock_stream)
+        mock_stream_ctx.__aexit__ = AsyncMock(return_value=None)
+
+        mock_anthropic = MagicMock()
+        mock_anthropic.messages.stream = MagicMock(return_value=mock_stream_ctx)
+
+        with patch("anthropic.AsyncAnthropic", return_value=mock_anthropic):
+            client = AnthropicClient("sk-ant", "claude-3")
+            chunks = [c async for c in client.stream("prompt", system="be expert")]
+
+        assert chunks == ["hi"]
+        call_kwargs = mock_anthropic.messages.stream.call_args[1]
+        assert "system" in call_kwargs
 
 
 # ── GeminiClient ──────────────────────────────────────────────────────────────

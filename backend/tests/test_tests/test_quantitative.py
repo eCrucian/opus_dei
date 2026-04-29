@@ -13,7 +13,7 @@ class TestQuantitativeTest:
         self, sample_model_understanding, minimal_pricer_code, tmp_path, monkeypatch
     ):
         import app.services.tests.quantitative as qt_mod
-        monkeypatch.setattr(qt_mod.settings, "generated_code_dir", tmp_path)
+        monkeypatch.setattr(type(qt_mod.settings), "generated_code_dir", property(lambda s: tmp_path))
 
         llm = MagicMock()
         llm.complete = AsyncMock(
@@ -29,7 +29,7 @@ class TestQuantitativeTest:
         self, sample_model_understanding, minimal_pricer_code, tmp_path, monkeypatch
     ):
         import app.services.tests.quantitative as qt_mod
-        monkeypatch.setattr(qt_mod.settings, "generated_code_dir", tmp_path)
+        monkeypatch.setattr(type(qt_mod.settings), "generated_code_dir", property(lambda s: tmp_path))
 
         proposed = [{"test_id": "qt_001", "name": "Bound", "description": "desc",
                      "risk_factors_involved": ["taxa_di"]}]
@@ -52,7 +52,7 @@ class TestQuantitativeTest:
         self, sample_model_understanding, minimal_pricer_code, tmp_path, monkeypatch
     ):
         import app.services.tests.quantitative as qt_mod
-        monkeypatch.setattr(qt_mod.settings, "generated_code_dir", tmp_path)
+        monkeypatch.setattr(type(qt_mod.settings), "generated_code_dir", property(lambda s: tmp_path))
 
         proposed = [
             {"test_id": "qt_001", "name": "T1", "description": "d1", "risk_factors_involved": []},
@@ -87,7 +87,7 @@ class TestQuantitativeTest:
         self, sample_model_understanding, minimal_pricer_code, tmp_path, monkeypatch
     ):
         import app.services.tests.quantitative as qt_mod
-        monkeypatch.setattr(qt_mod.settings, "generated_code_dir", tmp_path)
+        monkeypatch.setattr(type(qt_mod.settings), "generated_code_dir", property(lambda s: tmp_path))
 
         proposed = [{"test_id": "qt_001", "name": "T1", "description": "d", "risk_factors_involved": []}]
 
@@ -107,7 +107,7 @@ class TestQuantitativeTest:
         self, sample_model_understanding, minimal_pricer_code, tmp_path, monkeypatch
     ):
         import app.services.tests.quantitative as qt_mod
-        monkeypatch.setattr(qt_mod.settings, "generated_code_dir", tmp_path)
+        monkeypatch.setattr(type(qt_mod.settings), "generated_code_dir", property(lambda s: tmp_path))
 
         proposed = [{"test_id": "qt_001", "name": "T1", "description": "d", "risk_factors_involved": []}]
         llm = MagicMock()
@@ -127,7 +127,7 @@ class TestQuantitativeTest:
         self, sample_model_understanding, minimal_pricer_code, tmp_path, monkeypatch
     ):
         import app.services.tests.quantitative as qt_mod
-        monkeypatch.setattr(qt_mod.settings, "generated_code_dir", tmp_path)
+        monkeypatch.setattr(type(qt_mod.settings), "generated_code_dir", property(lambda s: tmp_path))
 
         proposed = [{"test_id": "qt_save", "name": "Save Test", "description": "d", "risk_factors_involved": []}]
         llm = MagicMock()
@@ -147,7 +147,7 @@ class TestQuantitativeTest:
         self, sample_model_understanding, minimal_pricer_code, tmp_path, monkeypatch
     ):
         import app.services.tests.quantitative as qt_mod
-        monkeypatch.setattr(qt_mod.settings, "generated_code_dir", tmp_path)
+        monkeypatch.setattr(type(qt_mod.settings), "generated_code_dir", property(lambda s: tmp_path))
 
         proposed = [{"test_id": "qt_fig", "name": "Fig", "description": "d", "risk_factors_involved": []}]
         llm = MagicMock()

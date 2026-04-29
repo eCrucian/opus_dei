@@ -31,7 +31,7 @@ class TestRunValidation:
         self, sample_model_understanding, sample_parsed_doc, tmp_path, monkeypatch
     ):
         import app.services.orchestrator as orch
-        monkeypatch.setattr(orch.settings, "generated_code_dir", tmp_path / "gen")
+        monkeypatch.setattr(type(orch.settings), "generated_code_dir", property(lambda s: tmp_path / "gen"))
         (tmp_path / "gen").mkdir()
 
         job = ValidationJob(job_id="full-test")
@@ -87,7 +87,7 @@ class TestRunValidation:
         self, sample_model_understanding, sample_parsed_doc, sample_parsed_code, tmp_path, monkeypatch
     ):
         import app.services.orchestrator as orch
-        monkeypatch.setattr(orch.settings, "generated_code_dir", tmp_path / "gen")
+        monkeypatch.setattr(type(orch.settings), "generated_code_dir", property(lambda s: tmp_path / "gen"))
         (tmp_path / "gen").mkdir()
 
         job = ValidationJob(job_id="t08-test")
@@ -174,7 +174,7 @@ class TestRunValidation:
         import app.services.orchestrator as orch
         gen_dir = tmp_path / "gen"
         gen_dir.mkdir()
-        monkeypatch.setattr(orch.settings, "generated_code_dir", gen_dir)
+        monkeypatch.setattr(type(orch.settings), "generated_code_dir", property(lambda s: gen_dir))
 
         job = ValidationJob(job_id="save-code")
         doc_path = tmp_path / "model.md"

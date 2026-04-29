@@ -62,7 +62,7 @@ class DocumentAnalyzerAgent(BaseAgent):
             doc_text=doc.raw_text[:40_000],
             equations=equations_str,
         )
-        data = await self.ask_json(prompt, max_tokens=16384)
+        data = await self.ask_json(prompt, max_tokens=6144)
 
         risk_factors = [RiskFactor(**rf) for rf in data.get("risk_factors", [])]
         equations = [ModelEquation(**eq) for eq in data.get("equations", [])]

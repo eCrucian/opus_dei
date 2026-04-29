@@ -30,7 +30,7 @@ class TestReportGenerator:
         self, sample_job, tmp_path, monkeypatch
     ):
         import app.services.report_generator as rg_mod
-        monkeypatch.setattr(rg_mod.settings, "reports_dir", tmp_path)
+        monkeypatch.setattr(type(rg_mod.settings), "reports_dir", property(lambda s: tmp_path))
 
         sample_job.test_results = [
             TestResult(test_id="T01", test_name="Q", status=TestStatus.PASSED,
@@ -48,7 +48,7 @@ class TestReportGenerator:
         self, sample_job, tmp_path, monkeypatch
     ):
         import app.services.report_generator as rg_mod
-        monkeypatch.setattr(rg_mod.settings, "reports_dir", tmp_path)
+        monkeypatch.setattr(type(rg_mod.settings), "reports_dir", property(lambda s: tmp_path))
 
         llm = _make_llm(OPINION_PAYLOAD)
         gen = ReportGenerator(llm)
@@ -61,7 +61,7 @@ class TestReportGenerator:
         self, sample_job, tmp_path, monkeypatch
     ):
         import app.services.report_generator as rg_mod
-        monkeypatch.setattr(rg_mod.settings, "reports_dir", tmp_path)
+        monkeypatch.setattr(type(rg_mod.settings), "reports_dir", property(lambda s: tmp_path))
 
         llm = _make_llm(OPINION_PAYLOAD)
         gen = ReportGenerator(llm)
@@ -74,7 +74,7 @@ class TestReportGenerator:
         self, sample_job, tmp_path, monkeypatch
     ):
         import app.services.report_generator as rg_mod
-        monkeypatch.setattr(rg_mod.settings, "reports_dir", tmp_path)
+        monkeypatch.setattr(type(rg_mod.settings), "reports_dir", property(lambda s: tmp_path))
 
         llm = _make_llm(OPINION_PAYLOAD)
         gen = ReportGenerator(llm)
@@ -87,7 +87,7 @@ class TestReportGenerator:
         self, sample_job, tmp_path, monkeypatch
     ):
         import app.services.report_generator as rg_mod
-        monkeypatch.setattr(rg_mod.settings, "reports_dir", tmp_path)
+        monkeypatch.setattr(type(rg_mod.settings), "reports_dir", property(lambda s: tmp_path))
 
         sample_job.test_results = [
             TestResult(test_id="T01", test_name="Q", recommendations=["Add stress test", "Add backtesting"]),
@@ -107,7 +107,7 @@ class TestReportGenerator:
             return result
 
         report_path = await gen.generate(sample_job)
-        html = report_path.read_text()
+        html = report_path.read_text(encoding="utf-8")
         # "Add stress test" should appear only once in final recommendations list
         assert html.count("Add stress test") >= 1
 
@@ -141,7 +141,7 @@ class TestReportGenerator:
 
     async def test_report_path_uses_job_id(self, sample_job, tmp_path, monkeypatch):
         import app.services.report_generator as rg_mod
-        monkeypatch.setattr(rg_mod.settings, "reports_dir", tmp_path)
+        monkeypatch.setattr(type(rg_mod.settings), "reports_dir", property(lambda s: tmp_path))
 
         llm = _make_llm(OPINION_PAYLOAD)
         gen = ReportGenerator(llm)
@@ -153,7 +153,7 @@ class TestReportGenerator:
         self, sample_job, tmp_path, monkeypatch
     ):
         import app.services.report_generator as rg_mod
-        monkeypatch.setattr(rg_mod.settings, "reports_dir", tmp_path)
+        monkeypatch.setattr(type(rg_mod.settings), "reports_dir", property(lambda s: tmp_path))
 
         sample_job.test_results = [
             TestResult(
@@ -171,7 +171,7 @@ class TestReportGenerator:
 
     async def test_html_contains_equations(self, sample_job, tmp_path, monkeypatch):
         import app.services.report_generator as rg_mod
-        monkeypatch.setattr(rg_mod.settings, "reports_dir", tmp_path)
+        monkeypatch.setattr(type(rg_mod.settings), "reports_dir", property(lambda s: tmp_path))
 
         llm = _make_llm(OPINION_PAYLOAD)
         gen = ReportGenerator(llm)
@@ -183,7 +183,7 @@ class TestReportGenerator:
         self, sample_job, tmp_path, monkeypatch
     ):
         import app.services.report_generator as rg_mod
-        monkeypatch.setattr(rg_mod.settings, "reports_dir", tmp_path)
+        monkeypatch.setattr(type(rg_mod.settings), "reports_dir", property(lambda s: tmp_path))
 
         llm = _make_llm(OPINION_PAYLOAD)
         gen = ReportGenerator(llm)

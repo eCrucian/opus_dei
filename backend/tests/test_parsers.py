@@ -223,7 +223,9 @@ class TestParseNotebook:
         nbformat = pytest.importorskip("nbformat")
         nb = nbformat.v4.new_notebook()
         code_cell = nbformat.v4.new_code_cell("print('result')")
-        code_cell.outputs = [{"output_type": "stream", "text": "result\n", "name": "stdout"}]
+        code_cell.outputs = [
+            nbformat.v4.new_output(output_type="stream", text="result\n", name="stdout")
+        ]
         nb.cells = [code_cell]
         path = tmp_path / "nb.ipynb"
         nbformat.write(nb, str(path))
@@ -235,7 +237,14 @@ class TestParseNotebook:
         nbformat = pytest.importorskip("nbformat")
         nb = nbformat.v4.new_notebook()
         code_cell = nbformat.v4.new_code_cell("1+1")
-        code_cell.outputs = [{"output_type": "execute_result", "data": {"text/plain": "2"}, "metadata": {}, "execution_count": 1}]
+        code_cell.outputs = [
+            nbformat.v4.new_output(
+                output_type="execute_result",
+                data={"text/plain": "2"},
+                metadata={},
+                execution_count=1,
+            )
+        ]
         nb.cells = [code_cell]
         path = tmp_path / "nb2.ipynb"
         nbformat.write(nb, str(path))
@@ -353,12 +362,13 @@ class TestExcelParser:
     def test_excel_named_range_exception_handling(self, tmp_path):
         """Covers the except: pass branch in named_ranges parsing."""
         openpyxl = pytest.importorskip("openpyxl")
-        wb = openpyxl.Workbook()
         path = tmp_path / "nb.xlsx"
-        wb.save(str(path))
+        openpyxl.Workbook().save(str(path))
 
-        bad_range = MagicMock()
-        bad_range.attr_text = property(lambda self: (_ for _ in ()).throw(AttributeError("no attr")))
+        class _BadRange:
+            @property
+            def attr_text(self):
+                raise AttributeError("no attr_text")
 
         with patch("openpyxl.load_workbook") as mock_load:
             mock_wb = MagicMock()
@@ -368,13 +378,24 @@ class TestExcelParser:
             mock_ws.max_row = 0
             mock_ws.max_column = 0
             mock_wb.__getitem__ = MagicMock(return_value=mock_ws)
-            mock_wb.defined_names.items.return_value = [("bad_range", bad_range)]
+            mock_wb.defined_names.items.return_value = [("bad_range", _BadRange())]
             mock_wb.close = MagicMock()
             mock_load.return_value = mock_wb
 
             sheets, named = parse_excel(path)
 
-        assert isinstance(named, dict)
+        assert "bad_range" not in named  # exception was caught, range excluded
+
+    def test_excel_to_text_with_named_ranges(self, tmp_path):
+        """Covers the if named_ranges: block in excel_to_text."""
+        path = tmp_path / "nr.xlsx"
+        path.write_bytes(b"fake")
+        with patch("app.services.parsers.excel.parse_excel",
+                   return_value=([], {"MyRange": "Sheet1!$A$1"})):
+            text = excel_to_text(path)
+        assert "Named Ranges" in text
+        assert "MyRange" in text
+        assert "Sheet1!$A$1" in text
 
 
 # ── Code parser ───────────────────────────────────────────────────────────────

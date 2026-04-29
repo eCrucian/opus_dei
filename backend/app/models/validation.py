@@ -63,7 +63,7 @@ class ParsedDocument(BaseModel):
 
 
 class ParsedCode(BaseModel):
-    files: List[Dict[str, str]] = []
+    files: List[Dict[str, Any]] = []
     excel_sheets: List[Dict[str, Any]] = []
     language: str = "mixed"
     summary: str = ""
