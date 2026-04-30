@@ -13,7 +13,9 @@
       "Bash(curl -s http://localhost:8000/api/health)",
       "Bash(netstat -ano)",
       "Bash(taskkill /F /PID 5756)",
-      "PowerShell(Stop-Process -Id 5756 -Force)"
+      "PowerShell(Stop-Process -Id 5756 -Force)",
+      "Bash(curl -s \"http://localhost:8000/api/validation/0dba280f-7b6b-4898-83b7-775e1e509051/status\")",
+      "Bash(python -c ' *)"
     ]
   }
 }
